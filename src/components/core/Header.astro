@@ -1,0 +1,87 @@
+---
+interface Props {
+	title?: string;
+}
+
+const { title = 'EnarmDuo' } = Astro.props;
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-sm" style="background-color: var(--color-blanco);">
+	<div class="px-8">
+		<nav class="flex items-center gap-12 py-4">
+			<!-- Logo a la izquierda -->
+			<a href="/" class="flex-shrink-0">
+				<img src="/img/logos/logo-EnarmDuo-removebg.png" alt="EnarmDuo" class="h-10 w-auto" />
+			</a>
+
+			<!-- Navegación Central - Desktop -->
+			<ul class="hidden md:flex items-center gap-8">
+				<li>
+					<a href="/" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+						Inicio
+					</a>
+				</li>
+				<li>
+					<a href="/blog" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+						Blog
+					</a>
+				</li>
+				<li>
+					<a href="#contacto" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+						Contacto
+					</a>
+				</li>
+			</ul>
+
+			<!-- Spacer para empujar el botón a la derecha -->
+			<div class="flex-grow"></div>
+
+			<!-- CTA Button - Desktop -->
+			<button class="hidden sm:block px-6 py-2 rounded-lg font-medium transition-all hover:shadow-lg hover:scale-105" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
+				Registrarse
+			</button>
+
+			<!-- Mobile Menu Button -->
+			<button class="md:hidden w-6 h-6 flex items-center justify-center group" id="mobile-menu-btn">
+				<svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-negro);">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</button>
+		</nav>
+
+		<!-- Mobile Menu - Hidden by default -->
+		<nav id="mobile-nav" class="hidden md:hidden pb-4">
+			<ul class="flex flex-col py-4 space-y-2">
+				<li>
+					<a href="/" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+						Inicio
+					</a>
+				</li>
+				<li>
+					<a href="/blog" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+						Blog
+					</a>
+				</li>
+				<li>
+					<a href="#contacto" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+						Contacto
+					</a>
+				</li>
+				<li class="pt-2">
+					<button class="w-full px-6 py-2 rounded-lg font-medium transition-all" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
+						Registrarse
+					</button>
+				</li>
+			</ul>
+		</nav>
+	</div>
+</header>
+
+<script>
+	const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+	const mobileNav = document.getElementById('mobile-nav');
+
+	mobileMenuBtn?.addEventListener('click', () => {
+		mobileNav?.classList.toggle('hidden');
+	});
+</script>
