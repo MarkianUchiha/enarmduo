@@ -1,0 +1,187 @@
+---
+// Lista de iconos médicos disponibles
+const iconosBase = [
+	'doctor.svg',
+	'heart.svg',
+	'brain.svg',
+	'medicines.svg',
+	'stetoscopic.svg',
+	'blod-test.svg',
+	'embarazo.svg',
+	'gastro.svg',
+	'gine.svg',
+	'cancer.svg',
+	'colon.svg',
+	'ophthalmologist.svg',
+	'peso.svg',
+	'psyquiatria.svg',
+	'renal.svg',
+	'tiroides.svg',
+	'ultrasound.svg',
+	'app.svg'
+];
+
+// Duplicar iconos para efecto de desfile infinito seamless
+const iconos = [...iconosBase, ...iconosBase];
+---
+
+<section class="w-full py-8 md:py-12 overflow-hidden" style="background-color: var(--color-blanco);">
+	<!-- Frase con efecto Typewriter -->
+	<div class="mb-12 md:mb-12 px-4 md:px-8">
+		<p class="text-3xl md:text-5xl text-center md:text-left max-w-[84%] md:max-w-[45%] mx-auto md:mx-0" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-weight: 400; line-height: 1.3;">
+			<span id="texto-typewriter"></span>
+			<span class="cursor-typewriter">|</span>
+		</p>
+	</div>
+
+	<!-- Contenedor de iconos flotantes (sin padding, ancho completo) -->
+	<div class="relative h-32 md:h-40">
+		<div class="iconos-container flex items-center gap-8 md:gap-12">
+			{iconos.map((icono, index) => (
+				<div 
+					class="icono-item" 
+					data-index={index}
+					style="opacity: 0.6;"
+				>
+					<img 
+						src={`/ico/${icono}`} 
+						alt={`Icono médico ${index + 1}`}
+						class="w-12 h-12 md:w-16 md:h-16 icono-svg"
+						style="filter: grayscale(100%) brightness(0.8);"
+					/>
+				</div>
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	import gsap from 'gsap';
+
+	// Efecto Typewriter
+	const textoCompleto = 'EnarmDuo es el simulador de ENARM más completo, diseñado para que mejores en las especialidades que mas te cuestan trabajo.';
+	const elementoTexto = document.getElementById('texto-typewriter');
+	let indiceCaracter = 0;
+
+	function escribirTexto() {
+		if (indiceCaracter < textoCompleto.length) {
+			elementoTexto!.textContent += textoCompleto.charAt(indiceCaracter);
+			indiceCaracter++;
+			setTimeout(escribirTexto, 80); // Velocidad de escritura
+		} else {
+			// Ocultar cursor al terminar
+			const cursor = document.querySelector('.cursor-typewriter') as HTMLElement;
+			if (cursor) {
+				setTimeout(() => {
+					cursor.style.display = 'none';
+				}, 500);
+			}
+		}
+	}
+
+	// Iniciar typewriter al cargar
+	setTimeout(escribirTexto, 500);
+
+	// Animaciones de onda vertical para cada icono (60% más intenso)
+	const iconosItems = document.querySelectorAll('.icono-item');
+	
+	iconosItems.forEach((icono, index) => {
+		// Movimiento ondulante vertical duplicado (doble de rango)
+		gsap.to(icono, {
+			y: -64, // Doble de rango: sube y baja 64px desde el centro
+			duration: 2.5 + (index * 0.05),
+			repeat: -1,
+			yoyo: true,
+			ease: 'sine.inOut',
+			delay: index * 0.1,
+		});
+
+		// Pulso de opacidad sutil
+		gsap.to(icono, {
+			opacity: 0.8,
+			duration: 2,
+			repeat: -1,
+			yoyo: true,
+			ease: 'sine.inOut',
+			delay: index * 0.05,
+		});
+	});
+</script>
+
+<style>
+	/* Cursor parpadeante para typewriter */
+	.cursor-typewriter {
+		display: inline-block;
+		animation: parpadeo 1s infinite;
+		margin-left: 2px;
+		color: var(--color-azul);
+		font-weight: 300;
+	}
+
+	@keyframes parpadeo {
+		0%, 49% {
+			opacity: 1;
+		}
+		50%, 100% {
+			opacity: 0;
+		}
+	}
+
+	/* Animación de carousel infinito seamless */
+	@keyframes scroll-left {
+		0% {
+			transform: translateX(0);
+		}
+		100% {
+			transform: translateX(-50%); /* Mover exactamente la mitad (un set completo) */
+		}
+	}
+
+	/* Contenedor de iconos con animación de carousel */
+	.iconos-container {
+		white-space: nowrap;
+		overflow-x: visible;
+		overflow-y: visible;
+		padding: 2rem 0;
+		display: inline-flex;
+		animation: scroll-left 30s linear infinite;
+	}
+
+	/* Pausar animación al hacer hover (opcional) */
+	@media (min-width: 768px) {
+		.iconos-container:hover {
+			animation-play-state: paused;
+		}
+	}
+
+	.icono-item {
+		display: inline-flex;
+		flex-shrink: 0;
+		transition: all 0.3s ease;
+	}
+
+	.icono-svg {
+		object-fit: contain;
+		transition: filter 0.3s ease;
+	}
+
+	/* Efecto hover para desktop */
+	@media (min-width: 768px) {
+		.icono-item:hover {
+			transform: scale(1.2) !important;
+			opacity: 1 !important;
+		}
+
+		.icono-item:hover .icono-svg {
+			filter: grayscale(0%) brightness(1) !important;
+		}
+	}
+
+	/* Responsive */
+	@media (max-width: 640px) {
+		.iconos-container {
+			justify-content: flex-start;
+			padding-left: 1rem;
+		}
+	}
+</style>

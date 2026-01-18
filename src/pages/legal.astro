@@ -1,0 +1,154 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/core/Header.astro';
+import Footer from '../components/core/Footer.astro';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import { marked } from 'marked';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Ruta base al directorio content/legal
+const contentPath = join(__dirname, '..', 'content', 'legal');
+
+// Leer los archivos de contenido legal
+const terminosContent = readFileSync(join(contentPath, 'terminos-condiciones.md'), 'utf-8');
+const politicasContent = readFileSync(join(contentPath, 'politicas-privacidad.md'), 'utf-8');
+const avisoContent = readFileSync(join(contentPath, 'aviso-privacidad.md'), 'utf-8');
+
+// Procesar contenido Markdown a HTML usando marked
+const terminosHTML = marked.parse(terminosContent);
+const politicasHTML = marked.parse(politicasContent);
+const avisoHTML = marked.parse(avisoContent);
+---
+
+<Layout title="EnarmDuo - Términos Legales">
+	<Header />
+	<div class="min-h-screen w-full flex flex-col items-center justify-center p-12 m-8 bg-gray-50">
+		<div class="w-full max-w-6xl">
+			<!-- Contenedor de botones -->
+			<div class="flex flex-row md:flex-col gap-4 w-full" style="height: 30vh;">
+				<!-- Botón 1: Términos y Condiciones -->
+				<button 
+					id="btn-terminos"
+					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
+					data-tipo="terminos"
+				>
+					Términos y Condiciones
+				</button>
+
+				<!-- Botón 2: Políticas de Privacidad -->
+				<button 
+					id="btn-privacidad"
+					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
+					data-tipo="privacidad"
+				>
+					Políticas de Privacidad
+				</button>
+
+				<!-- Botón 3: Aviso de Privacidad -->
+				<button 
+					id="btn-aviso"
+					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
+					data-tipo="aviso"
+				>
+					Aviso de Privacidad
+				</button>
+			</div>
+
+			<!-- Área de contenido -->
+			<div id="contenido-container" class="w-full mt-12 pt-12 bg-white rounded-xl shadow-lg p-8 min-h-[50vh] border-2 border-gray-100 hidden">
+				<div id="contenido-texto" class="prose max-w-none text-gray-700 leading-relaxed"></div>
+			</div>
+		</div>
+	</div>
+	<Footer />
+
+	<script define:vars={{ terminosHTML, politicasHTML, avisoHTML }}>
+		// Datos de contenido disponibles globalmente
+		// @ts-ignore - Extension global para contenido legal
+		window.contenidosLegales = {
+			terminos: terminosHTML,
+			privacidad: politicasHTML,
+			aviso: avisoHTML
+		};
+	</script>
+	
+	<script>
+		// Función para mostrar contenido
+		function mostrarContenido(tipo: string) {
+			const container = document.getElementById('contenido-container');
+			const texto = document.getElementById('contenido-texto');
+			const botones = document.querySelectorAll('.legal-btn');
+
+			if (!container || !texto) return;
+
+			// Ocultar contenedor si está vacío
+			if (container.classList.contains('hidden')) {
+				container.classList.remove('hidden');
+			}
+
+			// Actualizar contenido
+			// @ts-ignore - Contenido legal está definido en window
+			const contenido = window.contenidosLegales?.[tipo];
+			texto.innerHTML = contenido || '';
+
+			// Actualizar estado visual de botones
+			botones.forEach(boton => {
+				boton.classList.remove('border-blue-500', 'bg-blue-50');
+				boton.classList.add('border-transparent');
+			});
+
+			const botonActivo = document.getElementById(`btn-${tipo}`);
+			if (botonActivo) {
+				botonActivo.classList.remove('border-transparent');
+				botonActivo.classList.add('border-blue-500', 'bg-blue-50');
+			}
+
+			// Scroll suave hacia el contenido con offset para el header
+			const headerOffset = 80; // Ajustar según el tamaño del header
+			const elementPosition = container.getBoundingClientRect().top;
+			const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+			window.scrollTo({
+				top: offsetPosition,
+				behavior: 'smooth'
+			});
+		}
+
+		// Agregar event listeners cuando el DOM esté listo
+		document.addEventListener('DOMContentLoaded', () => {
+			const botones = document.querySelectorAll('.legal-btn');
+			
+			botones.forEach(boton => {
+				boton.addEventListener('click', () => {
+					const tipo = boton.getAttribute('data-tipo');
+					if (tipo) {
+						mostrarContenido(tipo);
+					}
+				});
+			});
+
+			// Mostrar primer contenido por defecto
+			mostrarContenido('terminos');
+		});
+	</script>
+</Layout>
+
+<style>
+	/* Estilos para móvil */
+	@media (max-width: 768px) {
+		.legal-btn {
+			min-height: 100px;
+		}
+	}
+
+	/* Estilos para desktop/tablet */
+	@media (min-width: 769px) {
+		.legal-btn {
+			min-height: 100px;
+		}
+	}
+</style>

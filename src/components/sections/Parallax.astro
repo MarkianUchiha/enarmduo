@@ -1,0 +1,256 @@
+---
+// Array de contenido para las secciones parallax
+const sections = [
+	{
+		title: 'Preguntas actualizadas constantemente',
+		text: 'Nuestra base de datos se actualiza regularmente con las preguntas más recientes y relevantes del ENARM, garantizando que tu preparación esté siempre al día.',
+		image: '/img/screnshots/examen.webp',
+		button: null
+	},
+	{
+		title: 'Estadísticas detalladas de tu progreso',
+		text: 'Visualiza tu avance con gráficas y métricas precisas que te ayudan a identificar tus fortalezas y áreas de oportunidad en cada especialidad médica.',
+		image: '/img/screnshots/logros.webp',
+		button: null
+	},
+    {
+		title: 'Examenes personalizados según tus necesidades',
+		text: 'Visualiza tu avance con gráficas y métricas precisas que te ayudan a identificar tus fortalezas y áreas de oportunidad en cada especialidad médica.',
+		image: '/img/screnshots/registro.webp',
+		button: null
+	},
+    {
+		title: 'Estadísticas detalladas de tu progreso',
+		text: 'Visualiza tu avance con gráficas y métricas precisas que te ayudan a identificar tus fortalezas y áreas de oportunidad en cada especialidad médica.',
+		image: '/img/screnshots/examen.webp',
+		button: null
+	},
+	{
+		title: 'Simulacros realistas del examen',
+		text: 'Practica con simulacros que replican fielmente las condiciones del ENARM real, con el mismo formato, tiempo y nivel de dificultad para que llegues completamente preparado.',
+		image: '/img/screnshots/inicio.webp',
+		button: {
+			text: 'Comenzar ahora',
+			link: '#registro'
+		}
+	}
+];
+---
+
+<!-- Vista Desktop: Parallax con ScrollTrigger -->
+<section class="hidden md:block relative w-full min-h-screen" style="background-color: var(--color-blanco);">
+	<div class="parallax-container">
+		<!-- Contenedor de textos (izquierda) -->
+		<div class="text-container">
+			{sections.map((section, index) => (
+				<div 
+					class="text-content" 
+					data-index={index}
+					style={index === 0 ? 'opacity: 1;' : 'opacity: 0;'}
+				>
+					<h3 class="text-4xl md:text-5xl font-bold mb-6" style="color: var(--color-negro); font-family: 'Inter', sans-serif;">
+						{section.title}
+					</h3>
+					<p class="text-lg md:text-xl mb-8 leading-relaxed" style="color: var(--color-zinc
+					); font-family: 'Google Sans Flex', sans-serif;">
+						{section.text}
+					</p>
+					{section.button && (
+						<a 
+							href={section.button.link}
+							class="inline-block px-8 py-4 rounded-lg text-black-400 font-semibold transition-all hover:scale-105"
+							style="background-color: var(--color-gris); font-family: 'Inter', sans-serif;"
+						>
+							{section.button.text}
+						</a>
+					)}
+				</div>
+			))}
+		</div>
+
+		<!-- Contenedor de imágenes (derecha) -->
+		<div class="image-container">
+			{sections.map((section, index) => (
+				<div 
+					class="image-content" 
+					data-index={index}
+					style={index === 0 ? 'opacity: 1; z-index: 1;' : 'opacity: 0; z-index: 0;'}
+				>
+					<img 
+						src={section.image} 
+						alt={section.title}
+						class="w-full h-auto rounded-2xl shadow-2xl"
+						loading="lazy"
+					/>
+				</div>
+			))}
+		</div>
+	</div>
+</section>
+
+<!-- Vista Móvil: Stack Simple -->
+<section class="md:hidden w-full py-12" style="background-color: var(--color-blanco);">
+	{sections.map((section) => (
+		<div class="mobile-section px-4 mb-16">
+			<img 
+				src={section.image} 
+				alt={section.title}
+				class="w-full h-auto rounded-xl shadow-lg mb-6"
+				loading="lazy"
+			/>
+			<h3 class="text-2xl font-bold mb-4" style="color: var(--color-negro); font-family: 'Inter', sans-serif;">
+				{section.title}
+			</h3>
+			<p class="text-base mb-6 leading-relaxed" style="color: var(--color-gris); font-family: 'Google Sans Flex', sans-serif;">
+				{section.text}
+			</p>
+			{section.button && (
+				<a 
+					href={section.button.link}
+					class="inline-block px-6 py-3 rounded-lg text-white font-semibold"
+					style="background-color: var(--color-gris); font-family: 'Inter', sans-serif;"
+				>
+					{section.button.text}
+				</a>
+			)}
+		</div>
+	))}
+</section>
+
+<script>
+	// @ts-ignore
+	import gsap from 'gsap';
+	// @ts-ignore
+	import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+	gsap.registerPlugin(ScrollTrigger);
+
+	// Solo ejecutar en desktop
+	if (window.innerWidth >= 768) {
+		const container = document.querySelector('.parallax-container') as HTMLElement;
+		const textContents = document.querySelectorAll('.text-content');
+		const imageContents = document.querySelectorAll('.image-content');
+		const totalSections = textContents.length;
+
+		if (container && totalSections > 0) {
+			// Calcular dinámicamente el scroll total necesario
+			const numTransitions = totalSections - 1; // 5 secciones = 4 transiciones
+			const scrollAmount = numTransitions * 100; // 400% para 4 transiciones
+			
+			// Pin la sección completa
+			ScrollTrigger.create({
+				trigger: container,
+				start: 'top top',
+				end: `+=${scrollAmount}%`,
+				pin: true,
+				scrub: true,
+			});
+
+			// Timeline principal único y secuencial
+			const masterTimeline = gsap.timeline({
+				scrollTrigger: {
+					trigger: container,
+					start: 'top top',
+					end: `+=${scrollAmount}%`,
+					scrub: 1,
+				}
+			});
+
+			// Agregar cada transición al timeline secuencialmente
+			textContents.forEach((text, index) => {
+				if (index < totalSections - 1) {
+					const nextText = textContents[index + 1];
+					const currentImage = imageContents[index];
+					const nextImage = imageContents[index + 1];
+
+					// Cada transición ocupa una porción igual del timeline
+					const transitionDuration = 1; // Duración relativa (todas iguales)
+
+					// Animar texto actual (fade out + move up)
+					masterTimeline.to(text, {
+						opacity: 0,
+						y: -50,
+						ease: 'power2.inOut',
+						duration: transitionDuration
+					}, index * transitionDuration);
+
+					// Animar texto siguiente (fade in + move from bottom)
+					masterTimeline.fromTo(nextText, 
+						{ opacity: 0, y: 50 },
+						{ 
+							opacity: 1, 
+							y: 0, 
+							ease: 'power2.inOut',
+							duration: transitionDuration
+						},
+						index * transitionDuration
+					);
+
+					// Cambiar imagen con crossfade
+					masterTimeline.to(currentImage, {
+						opacity: 0,
+						zIndex: 0,
+						ease: 'power2.inOut',
+						duration: transitionDuration
+					}, index * transitionDuration);
+
+					masterTimeline.to(nextImage, {
+						opacity: 1,
+						zIndex: 1,
+						ease: 'power2.inOut',
+						duration: transitionDuration
+					}, index * transitionDuration);
+				}
+			});
+		}
+	}
+</script>
+
+<style>
+	.parallax-container {
+		display: grid;
+		grid-template-columns: 45% 10% 45%;
+		align-items: center;
+		min-height: 100vh;
+		padding: 2rem 2.5%;
+	}
+
+	.text-container {
+		position: relative;
+		grid-column: 1;
+	}
+
+	.text-content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		transition: opacity 0.3s ease, transform 0.3s ease;
+	}
+
+	.image-container {
+		position: relative;
+		grid-column: 3;
+		height: 600px;
+	}
+
+	.image-content {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transition: opacity 0.3s ease;
+	}
+
+	.image-content img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	/* Asegurar que las imágenes no se desborden */
+	.image-container, .image-content {
+		overflow: hidden;
+	}
+</style>
