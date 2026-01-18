@@ -75,10 +75,40 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - Botón CTA con efectos hover
 - Responsive perfecto móvil/desktop
 
+### Cintillo
+- Banner promocional destacado
+- Diseño minimalista
+- Animación de entrada suave
+
+### Video
+- Sección de contenido multimedia
+- Reproductor de video responsivo
+- Optimizado para todos los dispositivos
+
+### Parallax
+- Efecto parallax con GSAP ScrollTrigger
+- Contenido dinámico con imágenes
+- Transiciones suaves al hacer scroll
+- Diseño adaptativo móvil/desktop
+
+### Team
+- Carrusel horizontal de fundadores
+- Fotos con bordes redondeados
+- Información de cada miembro: nombre, título y posición
+- Indicadores de navegación interactivos
+- Animaciones de hover en las tarjetas
+- Scroll nativo con touch en móviles
+
 ### Footer
 - Información de contacto
 - Enlaces útiles
 - Derechos reservados
+
+### Página Legal
+- Procesamiento de Markdown a HTML
+- Secciones: Términos y Condiciones, Políticas de Privacidad, Aviso de Privacidad
+- Diseño con botones tab en móvil (verticales) y desktop (horizontales)
+- Scroll automático al cambiar de sección con offset para header
 
 ## 🔄 Próximos Pasos
 
