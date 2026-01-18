@@ -1,0 +1,175 @@
+---
+// Array de miembros del team
+const teamMembers = [
+	{
+		name: 'Dr. Andres Balderas',
+		title: 'Médico Radiólogo',
+		position: 'Fundador',
+		image: '/img/team/dr. Andres.jpeg'
+	},
+	{
+		name: 'Dr. Roberto Rodriguez',
+		title: 'Médico Cardiólogo',
+		position: 'Fundador',
+		image: '/img/team/Roberto.jpeg'
+	},
+	{
+		name: 'Dr. Christian Cupich',
+		title: 'Médico Dermatólogo',
+		position: 'Fundador',
+		image: '/img/team/Cupich.jpeg'
+	}
+];
+---
+
+<!-- Sección Team -->
+<section 
+	id="team" 
+	class="w-full py-16 md:py-24 px-4" 
+	style="background-color: var(--color-blanco);"
+>
+	<!-- Título de la sección -->
+	<div class="text-center mb-12 md:mb-16">
+		<h2 
+			class="text-3xl md:text-5xl font-bold mb-4" 
+			style="color: var(--color-negro); font-family: 'Inter', sans-serif;"
+		>
+			Nuestro Equipo
+		</h2>
+		<p 
+			class="text-lg md:text-xl" 
+			style="color: var(--color-gris); font-family: 'Google Sans Flex', sans-serif;"
+		>
+			Conoce a los fundadores de EnarmDuo
+		</p>
+	</div>
+
+	<!-- Carrusel de miembros del team -->
+	<div class="max-w-6xl mx-auto">
+		<div class="team-carousel overflow-x-auto flex gap-8 pb-8 snap-x snap-mandatory">
+			{teamMembers.map((member) => (
+				<div class="team-card flex-shrink-0 w-72 md:w-80 snap-start">
+					<!-- Foto del miembro -->
+					<img
+						src={member.image}
+						alt={member.name}
+						class="w-full aspect-square object-cover rounded-2xl shadow-lg mb-6 transition-transform hover:scale-105"
+						loading="lazy"
+					/>
+
+					<!-- Información del miembro -->
+					<div class="text-center">
+						<h3 
+							class="text-xl md:text-2xl font-bold mb-2" 
+							style="color: var(--color-negro); font-family: 'Inter', sans-serif;"
+						>
+							{member.name}
+						</h3>
+						<p 
+							class="text-base md:text-lg font-semibold mb-1" 
+							style="color: var(--color-gris); font-family: 'Google Sans Flex', sans-serif;"
+						>
+							{member.title}
+						</p>
+						<span 
+							class="text-sm md:text-base px-3 py-1 rounded-full inline-block" 
+							style="background-color: var(--color-gris); color: var(--color-blanco); font-family: 'Inter', sans-serif;"
+						>
+							{member.position}
+						</span>
+					</div>
+				</div>
+			))}
+		</div>
+
+		<!-- Indicadores de navegación -->
+		<div class="flex justify-center gap-2 mt-8">
+			{teamMembers.map((_, index) => (
+				<button
+					class="carousel-dot w-3 h-3 rounded-full transition-all"
+					data-index={index}
+					style="background-color: var(--color-gris); opacity: 0.5;"
+				></button>
+			))}
+		</div>
+	</div>
+</section>
+
+<script>
+	// Configurar carrusel
+	document.addEventListener('DOMContentLoaded', () => {
+		const carousel = document.querySelector('.team-carousel') as HTMLElement;
+		const dots = document.querySelectorAll('.carousel-dot');
+
+		if (!carousel || dots.length === 0) return;
+
+		// Función para actualizar indicadores
+		function updateDots() {
+			const scrollLeft = carousel.scrollLeft;
+			const cardWidth = carousel.querySelector('.team-card')?.getBoundingClientRect().width || 0;
+			const currentIndex = Math.round(scrollLeft / cardWidth);
+
+			dots.forEach((dot, index) => {
+				const dotElement = dot as HTMLElement;
+				if (index === currentIndex) {
+					dotElement.style.opacity = '1';
+				} else {
+					dotElement.style.opacity = '0.5';
+				}
+			});
+		}
+
+		// Escuchar eventos de scroll
+		carousel.addEventListener('scroll', () => {
+			// Debounce para mejor rendimiento
+			requestAnimationFrame(updateDots);
+		});
+
+		// Click en indicadores para navegar
+		dots.forEach((dot, index) => {
+			dot.addEventListener('click', () => {
+				const cardWidth = carousel.querySelector('.team-card')?.getBoundingClientRect().width || 0;
+				carousel.scrollTo({
+					left: index * cardWidth,
+					behavior: 'smooth'
+				});
+			});
+		});
+
+		// Inicializar indicadores
+		updateDots();
+	});
+</script>
+
+<style>
+	.team-carousel {
+		-webkit-overflow-scrolling: touch;
+		scroll-behavior: smooth;
+	}
+
+	/* Ocultar scrollbar */
+	.team-carousel::-webkit-scrollbar {
+		display: none;
+	}
+
+	.team-carousel {
+		-ms-overflow-style: none;
+		scrollbar-width: none;
+	}
+
+	.team-card {
+		transition: transform 0.3s ease;
+	}
+
+	.team-card:hover {
+		transform: translateY(-4px);
+	}
+
+	.carousel-dot {
+		transition: opacity 0.3s ease, transform 0.2s ease;
+	}
+
+	.carousel-dot:hover {
+		transform: scale(1.2);
+	}
+</style>
