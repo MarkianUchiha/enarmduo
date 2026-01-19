@@ -11,8 +11,10 @@ const legalDocs = await getCollection('legal');
 // Renderizar cada documento a HTML usando marked
 const legalDocsRendered = legalDocs.map(doc => {
 	const html = marked.parse(doc.body || '');
+	// Eliminar la extensión .md del ID para que coincida con data-slug
+	const idSinExtension = doc.id.replace('.md', '');
 	return {
-		id: doc.id,
+		id: idSinExtension,
 		html: html
 	};
 });
