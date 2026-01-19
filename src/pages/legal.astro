@@ -109,16 +109,6 @@ const legalDocsRendered = legalDocs.map(doc => {
 				botonActivo.classList.remove('border-transparent');
 				botonActivo.classList.add('border-blue-500', 'bg-blue-50');
 			}
-
-			// Scroll suave hacia el contenido con offset para el header
-			const headerOffset = 80; // Ajustar según el tamaño del header
-			const elementPosition = container.getBoundingClientRect().top;
-			const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-			window.scrollTo({
-				top: offsetPosition,
-				behavior: 'smooth'
-			});
 		}
 
 		// Agregar event listeners cuando el DOM esté listo
