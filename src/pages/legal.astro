@@ -2,26 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/core/Header.astro';
 import Footer from '../components/core/Footer.astro';
-import { readFileSync } from 'fs';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { marked } from 'marked';
+import { getCollection } from 'astro:content';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-// Ruta base al directorio content/legal
-const contentPath = join(__dirname, '..', 'content', 'legal');
-
-// Leer los archivos de contenido legal
-const terminosContent = readFileSync(join(contentPath, 'terminos-condiciones.md'), 'utf-8');
-const politicasContent = readFileSync(join(contentPath, 'politicas-privacidad.md'), 'utf-8');
-const avisoContent = readFileSync(join(contentPath, 'aviso-privacidad.md'), 'utf-8');
-
-// Procesar contenido Markdown a HTML usando marked
-const terminosHTML = marked.parse(terminosContent);
-const politicasHTML = marked.parse(politicasContent);
-const avisoHTML = marked.parse(avisoContent);
+// Obtener todos los documentos legales de la colección
+const legalDocs = await getCollection('legal');
 ---
 
 <Layout title="EnarmDuo - Términos Legales">
@@ -34,7 +18,8 @@ const avisoHTML = marked.parse(avisoContent);
 				<button 
 					id="btn-terminos"
 					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
-					data-tipo="terminos"
+					data-tipo="terminos-condiciones"
+					data-slug="terminos-condiciones"
 				>
 					Términos y Condiciones
 				</button>
@@ -43,7 +28,8 @@ const avisoHTML = marked.parse(avisoContent);
 				<button 
 					id="btn-privacidad"
 					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
-					data-tipo="privacidad"
+					data-tipo="politicas-privacidad"
+					data-slug="politicas-privacidad"
 				>
 					Políticas de Privacidad
 				</button>
@@ -52,7 +38,8 @@ const avisoHTML = marked.parse(avisoContent);
 				<button 
 					id="btn-aviso"
 					class="legal-btn flex-1 bg-white shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-xl p-6 text-lg font-semibold text-gray-800 border-2 border-transparent hover:border-blue-300 cursor-pointer active:scale-95 transition-transform"
-					data-tipo="aviso"
+					data-tipo="aviso-privacidad"
+					data-slug="aviso-privacidad"
 				>
 					Aviso de Privacidad
 				</button>
@@ -66,19 +53,20 @@ const avisoHTML = marked.parse(avisoContent);
 	</div>
 	<Footer />
 
-	<script define:vars={{ terminosHTML, politicasHTML, avisoHTML }}>
-		// Datos de contenido disponibles globalmente
-		// @ts-ignore - Extension global para contenido legal
-		window.contenidosLegales = {
-			terminos: terminosHTML,
-			privacidad: politicasHTML,
-			aviso: avisoHTML
-		};
+	<script define:vars={{ legalDocs }}>
+		// Convertir documentos a un objeto accesible
+		// @ts-ignore - Definición global para contenido legal
+		window.contenidosLegales = {};
+		
+		legalDocs.forEach(doc => {
+			// @ts-ignore
+			window.contenidosLegales[doc.id] = doc.body;
+		});
 	</script>
 	
 	<script>
 		// Función para mostrar contenido
-		function mostrarContenido(tipo: string) {
+		function mostrarContenido(slug: string) {
 			const container = document.getElementById('contenido-container');
 			const texto = document.getElementById('contenido-texto');
 			const botones = document.querySelectorAll('.legal-btn');
@@ -92,7 +80,7 @@ const avisoHTML = marked.parse(avisoContent);
 
 			// Actualizar contenido
 			// @ts-ignore - Contenido legal está definido en window
-			const contenido = window.contenidosLegales?.[tipo];
+			const contenido = window.contenidosLegales?.[slug];
 			texto.innerHTML = contenido || '';
 
 			// Actualizar estado visual de botones
@@ -101,7 +89,7 @@ const avisoHTML = marked.parse(avisoContent);
 				boton.classList.add('border-transparent');
 			});
 
-			const botonActivo = document.getElementById(`btn-${tipo}`);
+			const botonActivo = document.querySelector(`[data-slug="${slug}"]`);
 			if (botonActivo) {
 				botonActivo.classList.remove('border-transparent');
 				botonActivo.classList.add('border-blue-500', 'bg-blue-50');
@@ -124,15 +112,15 @@ const avisoHTML = marked.parse(avisoContent);
 			
 			botones.forEach(boton => {
 				boton.addEventListener('click', () => {
-					const tipo = boton.getAttribute('data-tipo');
-					if (tipo) {
-						mostrarContenido(tipo);
+					const slug = boton.getAttribute('data-slug');
+					if (slug) {
+						mostrarContenido(slug);
 					}
 				});
 			});
 
 			// Mostrar primer contenido por defecto
-			mostrarContenido('terminos');
+			mostrarContenido('terminos-condiciones');
 		});
 	</script>
 </Layout>
