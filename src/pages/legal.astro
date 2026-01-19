@@ -3,9 +3,19 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/core/Header.astro';
 import Footer from '../components/core/Footer.astro';
 import { getCollection } from 'astro:content';
+import { marked } from 'marked';
 
 // Obtener todos los documentos legales de la colección
 const legalDocs = await getCollection('legal');
+
+// Renderizar cada documento a HTML usando marked
+const legalDocsRendered = legalDocs.map(doc => {
+	const html = marked.parse(doc.body || '');
+	return {
+		id: doc.id,
+		html: html
+	};
+});
 ---
 
 <Layout title="EnarmDuo - Términos Legales">
@@ -53,15 +63,18 @@ const legalDocs = await getCollection('legal');
 	</div>
 	<Footer />
 
-	<script define:vars={{ legalDocs }}>
+	<script define:vars={{ legalDocsRendered }}>
 		// Convertir documentos a un objeto accesible
 		// @ts-ignore - Definición global para contenido legal
 		window.contenidosLegales = {};
 		
-		legalDocs.forEach(doc => {
+		legalDocsRendered.forEach(doc => {
 			// @ts-ignore
-			window.contenidosLegales[doc.id] = doc.body;
+			window.contenidosLegales[doc.id] = doc.html;
 		});
+
+		// @ts-ignore - Para debug: log de los documentos cargados
+		console.log('Documentos legales cargados:', Object.keys(window.contenidosLegales));
 	</script>
 	
 	<script>
