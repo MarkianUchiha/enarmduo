@@ -26,7 +26,7 @@ El usuario es responsable de mantener actualizada su información personal y de 
 
 ## 4. Propiedad Intelectual
 
-Todo el contenido de EnarmDuo, incluyendo但不限于 textos, imágenes, videos y recursos educativos, es propiedad exclusiva de EnarmDuo y está protegido por las leyes de propiedad intelectual.
+Todo el contenido de EnarmDuo, incluyendo: textos, imágenes, videos y recursos educativos, es propiedad exclusiva de EnarmDuo y está protegido por las leyes de propiedad intelectual.
 
 ## 5. Pagos y Suscripciones
 
