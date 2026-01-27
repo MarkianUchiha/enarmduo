@@ -1,0 +1,104 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/core/Header.astro';
+import Footer from '../../components/core/Footer.astro';
+import BlogPostCard from '../../components/Blog/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+// Obtener todos los posts del blog ordenados por fecha
+const allPosts = (await getCollection('blog')).sort((a, b) => 
+	b.data.date.getTime() - a.data.date.getTime()
+);
+
+// Separar posts destacados y regulares
+const featuredPosts = allPosts.filter(post => post.data.featured);
+const regularPosts = allPosts.filter(post => !post.data.featured);
+
+// Formatear fecha para el encabezado
+const currentDate = new Intl.DateTimeFormat('es-MX', {
+	year: 'numeric',
+	month: 'long'
+}).format(new Date());
+---
+
+<Layout title="Blog - EnarmDuo | Artículos y Consejos para el ENARM">
+	<Header />
+	
+	<main class="min-h-screen bg-gray-50">
+		<!-- Header del blog -->
+		<section class="bg-gradient-to-br from-blue-50 to-white py-16 md:py-24">
+			<div class="container mx-auto px-4">
+				<div class="max-w-4xl mx-auto text-center">
+					<h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+						Nuestro Blog
+					</h1>
+					<p class="text-xl text-gray-600 leading-relaxed">
+						Consejos, estrategias y artículos para ayudarte a prepararte exitosamente para el ENARM
+					</p>
+					<p class="text-sm text-gray-500 mt-4">
+						Publicaciones de {currentDate}
+					</p>
+				</div>
+			</div>
+		</section>
+
+		<!-- Posts destacados -->
+		{featuredPosts.length > 0 && (
+			<section class="py-12 md:py-16">
+				<div class="container mx-auto px-4">
+					<h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+						📚 Posts Destacados
+					</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 lg:gap-8">
+						{featuredPosts.map(post => (
+							<BlogPostCard post={post} />
+						))}
+					</div>
+				</div>
+			</section>
+		)}
+
+		<!-- Todos los posts -->
+		{regularPosts.length > 0 && (
+			<section class="py-12 md:py-16 pb-24">
+				<div class="container mx-auto px-4">
+					<h2 class="text-2xl md:text-3xl font-bold text-gray-900 mb-8">
+						Todos los Artículos
+					</h2>
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+						{regularPosts.map(post => (
+							<BlogPostCard post={post} />
+						))}
+					</div>
+				</div>
+			</section>
+		)}
+
+		<!-- Mensaje cuando no hay posts -->
+		{allPosts.length === 0 && (
+			<section class="py-24">
+				<div class="container mx-auto px-4">
+					<div class="text-center">
+						<p class="text-xl text-gray-600">
+							Aún no hay artículos publicados. ¡Vuelve pronto!
+						</p>
+					</div>
+				</div>
+			</section>
+		)}
+	</main>
+
+	<Footer />
+</Layout>
+
+<style>
+	/* Estilos específicos del blog */
+	main {
+		font-family: 'Google Sans Flex', sans-serif;
+	}
+
+	/* Asegurar que las tarjetas tengan altura consistente */
+	article {
+		@apply h-full;
+	}
+</style>
