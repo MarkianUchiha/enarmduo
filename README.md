@@ -110,12 +110,25 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - Diseño con botones tab en móvil (verticales) y desktop (horizontales)
 - Scroll automático al cambiar de sección con offset para header
 
+### Página de Contacto
+- Formulario interactivo con validación
+- Campos: nombre, correo electrónico, tipo de solicitud, mensaje
+- Selector de tipo de solicitud con 3 opciones:
+  - Soporte Técnico → soporte@enarmduo.com
+  - Pagos y Suscripciones → facturacion@enarmduo.com
+  - Cuenta y Datos → soporte@enarmduo.com
+- Mensaje con límite de 600 palabras con contador en tiempo real
+- Envío de correos mediante Netlify Functions
+- Diseño responsivo con tarjetas informativas de departamentos
+- Mensajes de validación y confirmación de envío
+
 ## 🔄 Próximos Pasos
 
+- [ ] Integrar sistema de login en la página de contacto
+- [ ] Configurar credenciales de email en Netlify (variables de entorno)
 - [ ] Implementar formulario de leads con Supabase
 - [ ] Agregar sección Blog con content collections
 - [ ] Integrar animaciones GSAP en scroll
-- [ ] Configurar Netlify Edge Functions
 - [ ] Optimizar imágenes y assets
 - [ ] Agregar SEO avanzado
 
@@ -133,5 +146,24 @@ Derechos reservados © 2025 EnarmDuo
 
 ## 📞 Contacto
 
-- Email: info@enarmduo.com
-- Web: https://enarmduo.com
+- **Soporte Técnico**: soporte@enarmduo.com
+- **Pagos y Facturación**: facturacion@enarmduo.com
+- **General**: info@enarmduo.com
+- **Web**: https://enarmduo.com
+
+## ⚙️ Configuración de Variables de Entorno
+
+Para que funcione el envío de correos, debes configurar las siguientes variables de entorno en Netlify:
+
+```
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=tu-correo@gmail.com
+EMAIL_PASSWORD=tu-contraseña-de-aplicación
+EMAIL_FROM=noreply@enarmduo.com
+```
+
+**Notas importantes**:
+- Usa una contraseña de aplicación de Google, no tu contraseña normal
+- La cuenta de correo debe tener acceso para enviar correos
+- Los correos destino están configurados automáticamente según el tipo de solicitud

@@ -1,0 +1,98 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Header from '../components/core/Header.astro';
+import ContactoForm from '../components/Form/ContactoForm';
+import Footer from '../components/core/Footer.astro';
+---
+
+<Layout title="Contacto - EnarmDuo">
+	<Header />
+	
+	<main class="pt-24 pb-16 min-h-screen" style="background-color: var(--color-blanco);">
+		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+			{/* Encabezado de la sección */}
+			<div class="max-w-3xl mx-auto mb-12">
+				<h1 class="heading-1 text-center mb-4">
+					Contáctanos
+				</h1>
+				<p class="text-center text-lg" style="color: var(--color-Zinc);">
+					Estamos aquí para ayudarte. Envíanos tu mensaje y te responderemos lo más pronto posible.
+				</p>
+			</div>
+
+			{/* Contenedor del formulario */}
+			<div class="max-w-2xl mx-auto">
+				<div class="bg-white rounded-2xl shadow-lg p-8 md:p-12" style="border: 1px solid var(--color-gris);">
+					<div class="mb-8">
+						<h2 class="heading-3 mb-4">Formulario de contacto</h2>
+						<p class="text-sm" style="color: var(--color-Zinc);">
+							Completa todos los campos requeridos. Tu mensaje será enviado al departamento correspondiente.
+						</p>
+					</div>
+					
+					{/* Componente del formulario */}
+					<ContactoForm />
+				</div>
+
+				{/* Información adicional */}
+				<div class="mt-12 grid md:grid-cols-3 gap-6">
+					<div class="text-center p-6 rounded-lg" style="background-color: var(--color-blanco); border: 1px solid var(--color-gris);">
+						<div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style="background-color: var(--color-azul);">
+							<svg
+								class="w-6 h-6"
+								style="color: var(--color-blanco);"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+							></svg>
+						</div>
+						<h3 class="font-semibold mb-2" style="color: var(--color-negro);">Soporte Técnico</h3>
+						<p class="text-sm" style="color: var(--color-Zinc);">soporte@enarmduo.com</p>
+					</div>
+
+					<div class="text-center p-6 rounded-lg" style="background-color: var(--color-blanco); border: 1px solid var(--color-gris);">
+						<div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style="background-color: var(--color-azul);">
+							<svg
+								class="w-6 h-6"
+								style="color: var(--color-blanco);"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"
+							></svg>
+						</div>
+						<h3 class="font-semibold mb-2" style="color: var(--color-negro);">Pagos y Facturación</h3>
+						<p class="text-sm" style="color: var(--color-Zinc);">facturacion@enarmduo.com</p>
+					</div>
+
+					<div class="text-center p-6 rounded-lg" style="background-color: var(--color-blanco); border: 1px solid var(--color-gris);">
+						<div class="w-12 h-12 mx-auto mb-3 rounded-full flex items-center justify-center" style="background-color: var(--color-azul);">
+							<svg
+								class="w-6 h-6"
+								style="color: var(--color-blanco);"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+							></svg>
+						</div>
+						<h3 class="font-semibold mb-2" style="color: var(--color-negro);">Cuenta y Datos</h3>
+						<p class="text-sm" style="color: var(--color-Zinc);">soporte@enarmduo.com</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+	
+	<Footer />
+</Layout>
