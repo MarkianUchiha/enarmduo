@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 135 40" width="135" height="40">
+  <rect width="135" height="40" rx="5" fill="#000"/>
+  <rect x="0.5" y="0.5" width="134" height="39" rx="4.5" fill="none" stroke="#a6a6a6" stroke-width="1"/>
+  <text x="75" y="14" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="7" letter-spacing="0.3">DISPONIBLE EN</text>
+  <text x="75" y="28" text-anchor="middle" fill="#fff" font-family="Arial, sans-serif" font-size="13" font-weight="bold">Google Play</text>
+  <g transform="translate(12, 8)">
+    <path d="M1 1.5L12 12L1 22.5V1.5Z" fill="#4285F4"/>
+    <path d="M1 1.5L12 12L16 8.5L3 0.5L1 1.5Z" fill="#34A853"/>
+    <path d="M1 22.5L12 12L16 15.5L3 23.5L1 22.5Z" fill="#EA4335"/>
+    <path d="M16 8.5L12 12L16 15.5L20 12L16 8.5Z" fill="#FBBC04"/>
+  </g>
+</svg>

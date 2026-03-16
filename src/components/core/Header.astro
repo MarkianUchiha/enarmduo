@@ -11,23 +11,28 @@ const { title = 'EnarmDuo' } = Astro.props;
 		<nav class="flex items-center gap-12 py-4">
 			<!-- Logo a la izquierda -->
 			<a href="/" class="flex-shrink-0">
-				<img src="/img/logos/logo-EnarmDuo-removebg.png" alt="EnarmDuo" class="h-10 w-auto" />
+				<img src="/img/logos/Logo_final_enarmduo (1).png" alt="EnarmDuo" class="h-12 w-auto" />
 			</a>
 
 			<!-- Navegación Central - Desktop -->
 			<ul class="hidden md:flex items-center gap-8">
 				<li>
-					<a href="/" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+					<a href="/" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 13px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
 						Inicio
 					</a>
 				</li>
 				<li>
-					<a href="/blog" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+					<a href="/blog" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 13px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
 						Blog
 					</a>
 				</li>
 				<li>
-					<a href="/contacto" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-negro); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+					<a href="/precios" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 13px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
+						Precios
+					</a>
+				</li>
+				<li>
+					<a href="/contacto" class="transition-all px-2 py-1 rounded-md border-2 border-transparent" style="color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 13px; font-weight: 300;" onmouseover="this.style.borderColor='var(--color-gris)'" onmouseout="this.style.borderColor='transparent'">
 						Contacto
 					</a>
 				</li>
@@ -37,13 +42,13 @@ const { title = 'EnarmDuo' } = Astro.props;
 			<div class="flex-grow"></div>
 
 			<!-- CTA Button - Desktop -->
-			<button class="hidden sm:block px-6 py-2 rounded-lg font-medium transition-all hover:shadow-lg hover:scale-105" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
-				Registrarse
-			</button>
+			<a href="/contacto" class="hidden sm:block px-8 py-3 rounded-lg font-semibold transition-all hover:shadow-lg hover:scale-105 text-center no-underline" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
+				Descargar
+			</a>
 
 			<!-- Mobile Menu Button -->
 			<button class="md:hidden w-6 h-6 flex items-center justify-center group" id="mobile-menu-btn">
-				<svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-negro);">
+				<svg class="w-6 h-6 transition-transform group-hover:scale-110" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--color-azul);">
 					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16M4 18h16"></path>
 				</svg>
 			</button>
@@ -53,24 +58,29 @@ const { title = 'EnarmDuo' } = Astro.props;
 		<nav id="mobile-nav" class="hidden md:hidden pb-4">
 			<ul class="flex flex-col py-4 space-y-2">
 				<li>
-					<a href="/" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+					<a href="/" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-azul); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
 						Inicio
 					</a>
 				</li>
 				<li>
-					<a href="/blog" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+					<a href="/blog" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-azul); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
 						Blog
 					</a>
 				</li>
 				<li>
-					<a href="/contacto" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-negro); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+					<a href="/precios" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-azul); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
+						Precios
+					</a>
+				</li>
+				<li>
+					<a href="/contacto" class="block px-4 py-2 rounded-lg transition-all hover:border-l-4" style="color: var(--color-azul); border-left-color: var(--color-azul); font-family: 'Google Sans Flex', sans-serif; font-size: 11px; font-weight: 300;">
 						Contacto
 					</a>
 				</li>
 				<li class="pt-2">
-					<button class="w-full px-6 py-2 rounded-lg font-medium transition-all" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
-						Registrarse
-					</button>
+					<a href="/contacto" class="block w-full px-6 py-2 rounded-lg font-medium transition-all text-center no-underline" style="background-color: var(--color-azul); color: var(--color-blanco); font-family: 'Inter', sans-serif;">
+						Descargar
+					</a>
 				</li>
 			</ul>
 		</nav>

@@ -137,7 +137,7 @@ export default function ContactoForm() {
 						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
 					</svg>
 				</div>
-				<h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-negro)' }}>
+				<h3 className="text-2xl font-bold mb-2" style={{ color: 'var(--color-azul)' }}>
 					¡Mensaje Enviado!
 				</h3>
 				<p className="text-base" style={{ color: 'var(--color-Zinc)' }}>
@@ -158,7 +158,7 @@ export default function ContactoForm() {
 		<form onSubmit={handleSubmit} className="space-y-6">
 			{/* Campo: Nombre */}
 			<div>
-				<label htmlFor="nombre" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-negro)' }}>
+				<label htmlFor="nombre" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-azul)' }}>
 					Nombre completo
 				</label>
 				<input
@@ -172,7 +172,7 @@ export default function ContactoForm() {
 					}`}
 					style={{
 						backgroundColor: 'var(--color-blanco)',
-						color: 'var(--color-negro)',
+						color: 'var(--color-azul)',
 						borderColor: errors.nombre ? '#ef4444' : 'var(--color-gris)'
 					} as React.CSSProperties}
 					placeholder="Tu nombre completo"
@@ -182,7 +182,7 @@ export default function ContactoForm() {
 
 			{/* Campo: Email */}
 			<div>
-				<label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-negro)' }}>
+				<label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-azul)' }}>
 					Correo electrónico
 				</label>
 				<input
@@ -196,7 +196,7 @@ export default function ContactoForm() {
 					}`}
 					style={{
 						backgroundColor: 'var(--color-blanco)',
-						color: 'var(--color-negro)',
+						color: 'var(--color-azul)',
 						borderColor: errors.email ? '#ef4444' : 'var(--color-gris)'
 					}}
 					placeholder="tu@ejemplo.com"
@@ -206,7 +206,7 @@ export default function ContactoForm() {
 
 			{/* Campo: Tipo de Solicitud */}
 			<div>
-				<label htmlFor="tipo" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-negro)' }}>
+				<label htmlFor="tipo" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-azul)' }}>
 					Tipo de solicitud
 				</label>
 				<select
@@ -217,7 +217,7 @@ export default function ContactoForm() {
 					className="w-full px-4 py-3 rounded-lg border-2 transition-all"
 					style={{
 						backgroundColor: 'var(--color-blanco)',
-						color: 'var(--color-negro)',
+						color: 'var(--color-azul)',
 						borderColor: 'var(--color-gris)'
 					}}
 				>
@@ -231,7 +231,7 @@ export default function ContactoForm() {
 
 			{/* Campo: Mensaje */}
 			<div>
-				<label htmlFor="mensaje" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-negro)' }}>
+				<label htmlFor="mensaje" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-azul)' }}>
 					Mensaje
 				</label>
 				<textarea
@@ -245,7 +245,7 @@ export default function ContactoForm() {
 					}`}
 					style={{
 						backgroundColor: 'var(--color-blanco)',
-						color: 'var(--color-negro)',
+						color: 'var(--color-azul)',
 						borderColor: errors.mensaje ? '#ef4444' : 'var(--color-gris)'
 					}}
 					placeholder="Escribe tu mensaje aquí..."

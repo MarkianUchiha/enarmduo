@@ -30,8 +30,8 @@ const sections = [
 		text: 'Practica con nuestro simulador que replican fielmente las condiciones del ENARM real, con el mismo formato, tiempo y nivel de dificultad para que llegues completamente preparado.',
 		image: '/img/screnshots/inicio.webp',
 		button: {
-			text: 'Comenzar ahora',
-			link: '#registro'
+			text: 'Descargar app',
+			link: '/contacto'
 		}
 	}
 ];
@@ -48,7 +48,7 @@ const sections = [
 					data-index={index}
 					style={index === 0 ? 'opacity: 1;' : 'opacity: 0;'}
 				>
-					<h3 class="text-4xl md:text-5xl font-bold mb-6" style="color: var(--color-negro); font-family: 'Inter', sans-serif;">
+					<h3 class="text-4xl md:text-5xl font-bold mb-6" style="color: var(--color-azul); font-family: 'Inter', sans-serif;">
 						{section.title}
 					</h3>
 					<p class="text-lg md:text-xl mb-8 leading-relaxed" style="color: var(--color-zinc
@@ -98,7 +98,7 @@ const sections = [
 				class="w-full h-auto rounded-xl shadow-lg mb-6"
 				loading="lazy"
 			/>
-			<h3 class="text-2xl font-bold mb-4" style="color: var(--color-negro); font-family: 'Inter', sans-serif;">
+			<h3 class="text-2xl font-bold mb-4" style="color: var(--color-azul); font-family: 'Inter', sans-serif;">
 				{section.title}
 			</h3>
 			<p class="text-base mb-6 leading-relaxed" style="color: var(--color-gris); font-family: 'Google Sans Flex', sans-serif;">
@@ -133,11 +133,9 @@ const sections = [
 		const totalSections = textContents.length;
 
 		if (container && totalSections > 0) {
-			// Calcular dinámicamente el scroll total necesario
-			const numTransitions = totalSections - 1; // 5 secciones = 4 transiciones
-			const scrollAmount = numTransitions * 100; // 400% para 4 transiciones
-			
-			// Pin la sección completa
+			const numTransitions = totalSections - 1;
+			const scrollAmount = numTransitions * 150;
+
 			ScrollTrigger.create({
 				trigger: container,
 				start: 'top top',
@@ -146,62 +144,80 @@ const sections = [
 				scrub: true,
 			});
 
-			// Timeline principal único y secuencial
 			const masterTimeline = gsap.timeline({
 				scrollTrigger: {
 					trigger: container,
 					start: 'top top',
 					end: `+=${scrollAmount}%`,
-					scrub: 1,
+					scrub: 2,
 				}
 			});
 
-			// Agregar cada transición al timeline secuencialmente
+			// Fade-in: la seccion entera aparece al inicio del pin
+			masterTimeline.fromTo(container,
+				{ opacity: 0, y: 40 },
+				{ opacity: 1, y: 0, duration: 0.3, ease: 'power1.out' },
+				0
+			);
+
+			// Contenido de las secciones (offset para que empiece despues del fade-in)
+			const contentOffset = 0.3;
+
 			textContents.forEach((text, index) => {
 				if (index < totalSections - 1) {
 					const nextText = textContents[index + 1];
 					const currentImage = imageContents[index];
 					const nextImage = imageContents[index + 1];
 
-					// Cada transición ocupa una porción igual del timeline
-					const transitionDuration = 1; // Duración relativa (todas iguales)
+					const pauseDuration = 0.4;
+					const transitionDuration = 0.6;
+					const blockSize = pauseDuration + transitionDuration + pauseDuration;
+					const blockStart = contentOffset + index * blockSize + pauseDuration;
 
-					// Animar texto actual (fade out + move up)
+					// Texto actual: fade out suave hacia arriba
 					masterTimeline.to(text, {
 						opacity: 0,
-						y: -50,
-						ease: 'power2.inOut',
+						y: -30,
+						ease: 'power1.inOut',
 						duration: transitionDuration
-					}, index * transitionDuration);
+					}, blockStart);
 
-					// Animar texto siguiente (fade in + move from bottom)
-					masterTimeline.fromTo(nextText, 
-						{ opacity: 0, y: 50 },
-						{ 
-							opacity: 1, 
-							y: 0, 
-							ease: 'power2.inOut',
+					// Texto siguiente: fade in suave desde abajo
+					masterTimeline.fromTo(nextText,
+						{ opacity: 0, y: 30 },
+						{
+							opacity: 1,
+							y: 0,
+							ease: 'power1.inOut',
 							duration: transitionDuration
 						},
-						index * transitionDuration
+						blockStart
 					);
 
-					// Cambiar imagen con crossfade
+					// Imagen actual: crossfade suave
 					masterTimeline.to(currentImage, {
 						opacity: 0,
 						zIndex: 0,
-						ease: 'power2.inOut',
+						scale: 0.98,
+						ease: 'power1.inOut',
 						duration: transitionDuration
-					}, index * transitionDuration);
+					}, blockStart);
 
-					masterTimeline.to(nextImage, {
-						opacity: 1,
-						zIndex: 1,
-						ease: 'power2.inOut',
-						duration: transitionDuration
-					}, index * transitionDuration);
+					// Imagen siguiente: aparece con leve scale up
+					masterTimeline.fromTo(nextImage,
+						{ opacity: 0, scale: 1.02 },
+						{
+							opacity: 1,
+							zIndex: 1,
+							scale: 1,
+							ease: 'power1.inOut',
+							duration: transitionDuration
+						},
+						blockStart
+					);
 				}
 			});
+
 		}
 	}
 </script>

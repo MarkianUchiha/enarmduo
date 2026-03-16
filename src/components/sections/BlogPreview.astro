@@ -1,0 +1,199 @@
+---
+import { getCollection } from 'astro:content';
+
+// Obtener posts: destacados primero, luego por fecha
+const allPosts = await getCollection('blog');
+const sortedPosts = allPosts.sort((a, b) => {
+	// Destacados primero
+	if (a.data.featured && !b.data.featured) return -1;
+	if (!a.data.featured && b.data.featured) return 1;
+	// Luego por fecha (más reciente primero)
+	return b.data.date.getTime() - a.data.date.getTime();
+});
+
+// Desktop: hasta 4 posts (máx 2 destacados)
+// Mobile: hasta 4 posts (máx 1 destacado)
+const posts = sortedPosts.slice(0, 4);
+
+const formatDate = (date: Date) => {
+	return new Intl.DateTimeFormat('es-MX', {
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric'
+	}).format(date);
+};
+---
+
+<section class="w-full py-16 md:py-24" style="background-color: var(--color-blanco);">
+	<div class="max-w-7xl mx-auto px-6 md:px-8">
+		<!-- Encabezado -->
+		<div class="text-center mb-12 md:mb-16">
+			<h2 class="text-3xl md:text-4xl font-bold mb-4" style="color: var(--color-azul); font-family: 'Inter', sans-serif;">
+				Blog EnarmDuo
+			</h2>
+			<p class="text-base md:text-lg max-w-2xl mx-auto" style="color: var(--color-Zinc); font-family: 'Google Sans Flex', sans-serif;">
+				Artículos, estrategias y recursos para tu preparación al ENARM, escritos por médicos especialistas.
+			</p>
+		</div>
+
+		<!-- Grid Desktop: 3 columnas -->
+		<div class="hidden md:grid md:grid-cols-3 gap-8">
+			{posts.slice(0, 3).map((post) => (
+				<article class="blog-card group">
+					<a href={`/blog/${post.id}`} class="block no-underline">
+						<!-- Imagen -->
+						<div class="relative overflow-hidden rounded-xl mb-5">
+							{post.data.image ? (
+								<img
+									src={post.data.image}
+									alt={post.data.title}
+									class="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
+									loading="lazy"
+								/>
+							) : (
+								<div class="w-full aspect-[4/3] bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center">
+									<svg class="w-12 h-12 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+									</svg>
+								</div>
+							)}
+							{post.data.featured && (
+								<span class="absolute top-3 left-3 text-white text-xs font-semibold px-3 py-1 rounded-full" style="background-color: var(--color-azul);">
+									Destacado
+								</span>
+							)}
+						</div>
+
+						<!-- Contenido -->
+						<div class="flex items-center gap-3 mb-3">
+							<span class="text-xs font-semibold px-3 py-1 rounded-full" style="color: var(--color-azul); background-color: #e8f4f8;">
+								{post.data.category}
+							</span>
+							{post.data.readingTime && (
+								<span class="text-xs flex items-center gap-1" style="color: var(--color-Zinc);">
+									<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+										<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+									</svg>
+									{post.data.readingTime} min
+								</span>
+							)}
+						</div>
+
+						<h3 class="text-lg font-bold mb-2 transition-colors duration-200 group-hover:opacity-70" style="color: var(--color-azul); font-family: 'Inter', sans-serif;">
+							{post.data.title}
+						</h3>
+
+						<p class="text-sm leading-relaxed mb-4 line-clamp-2" style="color: var(--color-Zinc); font-family: 'Google Sans Flex', sans-serif;">
+							{post.data.description}
+						</p>
+
+						<!-- Autor y fecha -->
+						<div class="flex items-center gap-3 pt-4 border-t border-gray-100">
+							<div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0" style="background-color: var(--color-azul);">
+								<span class="text-white text-xs font-semibold">
+									{post.data.author.charAt(0)}
+								</span>
+							</div>
+							<div>
+								<p class="text-sm font-medium" style="color: var(--color-azul);">{post.data.author}</p>
+								<p class="text-xs" style="color: var(--color-gris);">{formatDate(post.data.date)}</p>
+							</div>
+						</div>
+					</a>
+				</article>
+			))}
+		</div>
+
+		<!-- Mobile: Stack vertical -->
+		<div class="md:hidden flex flex-col gap-6">
+			{posts.slice(0, 4).map((post, index) => (
+				<article class="blog-card-mobile group">
+					<a href={`/blog/${post.id}`} class="flex gap-4 no-underline">
+						<!-- Imagen (cuadrada, lado izquierdo) -->
+						<div class="relative overflow-hidden rounded-lg flex-shrink-0 w-28 h-28">
+							{post.data.image ? (
+								<img
+									src={post.data.image}
+									alt={post.data.title}
+									class="w-full h-full object-cover"
+									loading="lazy"
+								/>
+							) : (
+								<div class="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200" />
+							)}
+							{post.data.featured && index === 0 && (
+								<span class="absolute top-1.5 left-1.5 text-white font-semibold px-2 py-0.5 rounded-full" style="background-color: var(--color-azul); font-size: 10px;">
+									Destacado
+								</span>
+							)}
+						</div>
+
+						<!-- Contenido (lado derecho) -->
+						<div class="flex-1 min-w-0">
+							<div class="flex items-center gap-2 mb-1.5">
+								<span class="text-xs font-semibold px-2 py-0.5 rounded-full" style="color: var(--color-azul); background-color: #e8f4f8; font-size: 11px;">
+									{post.data.category}
+								</span>
+								{post.data.readingTime && (
+									<span class="text-xs" style="color: var(--color-gris); font-size: 11px;">
+										{post.data.readingTime} min
+									</span>
+								)}
+							</div>
+
+							<h3 class="text-sm font-bold mb-1 line-clamp-2" style="color: var(--color-azul); font-family: 'Inter', sans-serif;">
+								{post.data.title}
+							</h3>
+
+							<p class="text-xs leading-relaxed line-clamp-2 mb-2" style="color: var(--color-Zinc); font-family: 'Google Sans Flex', sans-serif;">
+								{post.data.description}
+							</p>
+
+							<div class="flex items-center gap-2">
+								<span class="text-xs font-medium" style="color: var(--color-azul);">{post.data.author}</span>
+								<span style="color: var(--color-gris);">·</span>
+								<span class="text-xs" style="color: var(--color-gris);">{formatDate(post.data.date)}</span>
+							</div>
+						</div>
+					</a>
+				</article>
+			))}
+		</div>
+
+		<!-- Botón ver todos -->
+		<div class="text-center mt-12">
+			<a
+				href="/blog"
+				class="inline-flex items-center gap-2 px-8 py-3 rounded-lg font-semibold transition-all duration-200 hover:opacity-90 no-underline"
+				style="background-color: var(--color-azul); color: white; font-family: 'Inter', sans-serif;"
+			>
+				Ver todos los artículos
+				<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+				</svg>
+			</a>
+		</div>
+	</div>
+</section>
+
+<style>
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.blog-card {
+		transition: transform 0.3s ease;
+	}
+
+	.blog-card:hover {
+		transform: translateY(-4px);
+	}
+
+	.blog-card-mobile + .blog-card-mobile {
+		padding-top: 1.5rem;
+		border-top: 1px solid #f0f0f0;
+	}
+</style>
