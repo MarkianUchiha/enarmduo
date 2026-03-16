@@ -122,6 +122,12 @@ Todos los comandos se ejecutan desde la raíz del proyecto:
 - Diseño responsivo con tarjetas informativas de departamentos
 - Mensajes de validación y confirmación de envío
 
+## ✅ Actualizaciones Recientes
+
+- **Favicon actualizado**: Se cambió el favicon del sitio a `icono_enarm.svg` para mejor identificación en navegadores
+- **Logo en Header**: Se actualizó el logo del Header a `Logo_final_enarmduo (1).png` con tamaño aumentado un 30%
+- **Mejoras visuales en Header**: Se aumentó el tamaño de los textos de navegación de 11px a 13px y el botón "Registrarse" ahora es más grande con padding aumentado
+
 ## 🔄 Próximos Pasos
 
 - [ ] Integrar sistema de login en la página de contacto

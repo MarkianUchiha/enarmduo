@@ -3,34 +3,34 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/core/Header.astro';
 import Footer from '../components/core/Footer.astro';
 
-// Precios web con ~10% descuento vs app
+// Precios web más baratos que en app (sin comisiones de store)
 const planes = [
 	{
 		nombre: 'Mensual',
-		precioApp: 259,
-		precioWeb: 233,
+		precioApp: 299,
+		precioWeb: 259,
 		periodo: '/mes',
 		duracion: '1 mes de acceso',
 		popular: false,
-		ahorro: null,
+		ahorro: 'Ahorra $40',
 	},
 	{
 		nombre: 'Trimestral',
-		precioApp: 699,
-		precioWeb: 629,
+		precioApp: 849,
+		precioWeb: 699,
 		periodo: '/3 meses',
 		duracion: '3 meses de acceso',
 		popular: true,
-		ahorro: 'Ahorra $70',
+		ahorro: 'Ahorra $150',
 	},
 	{
 		nombre: 'Anual',
-		precioApp: 2399,
-		precioWeb: 2159,
+		precioApp: 2899,
+		precioWeb: 2399,
 		periodo: '/año',
 		duracion: '12 meses de acceso',
 		popular: false,
-		ahorro: 'Ahorra $240',
+		ahorro: 'Ahorra $500',
 	},
 ];
 ---

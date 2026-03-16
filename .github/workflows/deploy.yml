@@ -1,0 +1,49 @@
+name: Deploy Web
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Instalar pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Configurar SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Subir build al servidor
+        run: |
+          rsync -avz --delete \
+            --exclude 'node_modules' \
+            dist/ package.json pnpm-lock.yaml \
+            root@${{ secrets.SERVER_IP }}:/var/www/enarm-web/
+
+      - name: Instalar dependencias y reiniciar PM2
+        run: |
+          ssh root@${{ secrets.SERVER_IP }} "cd /var/www/enarm-web && npm install --omit=dev && pm2 restart enarm-web"
+          sleep 3
+          ssh root@${{ secrets.SERVER_IP }} "pm2 status enarm-web | grep online"
