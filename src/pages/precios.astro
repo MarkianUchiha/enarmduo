@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import Header from '../components/core/Header.astro';
 import Footer from '../components/core/Footer.astro';
+import CheckoutButton from '../components/Checkout/CheckoutButton';
 
 // Precios web más baratos que en app (sin comisiones de store)
 const planes = [
@@ -126,13 +127,14 @@ const planes = [
 							</li>
 						</ul>
 
-						<!-- Botón (por ahora redirige a contacto) -->
-						<a
-							href="/contacto"
-							class={`block w-full text-center py-3 rounded-lg font-semibold transition-all duration-200 no-underline ${plan.popular ? 'plan-btn-popular' : 'plan-btn-regular'}`}
-						>
-							Elegir plan
-						</a>
+						<!-- Botón de pago — abre modal de email y redirige a OpenPay -->
+						<CheckoutButton
+							client:load
+							planId={plan.nombre.toLowerCase()}
+							planNombre={plan.nombre}
+							precio={plan.precioWeb}
+							isPopular={plan.popular}
+						/>
 					</div>
 				))}
 			</div>

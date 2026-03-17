@@ -91,8 +91,8 @@ export default function ContactoForm() {
 			// Obtener el correo destino según el tipo seleccionado
 			const correoDestino = correosPorTipo[formData.tipo];
 
-			// Enviar formulario a Netlify Functions
-			const response = await fetch('/.netlify/functions/send-contacto', {
+			// Enviar formulario al endpoint API de Astro
+			const response = await fetch('/api/send-contacto', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'

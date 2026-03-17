@@ -1,0 +1,133 @@
+---
+// Página de resultado del pago — SSR para consultar estado del cargo
+// OpenPay redirige aquí con ?id=CHARGE_ID al terminar el pago
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/core/Header.astro';
+import Footer from '../../components/core/Footer.astro';
+import { consultarCargo } from '../../utils/openpay';
+
+export const prerender = false;
+
+const chargeId = Astro.url.searchParams.get('id');
+let estado: 'completado' | 'pendiente' | 'fallido' | 'sin_id' = 'sin_id';
+let mensaje = '';
+
+if (chargeId) {
+	try {
+		const cargo = await consultarCargo(chargeId);
+
+		if (cargo.status === 'completed') {
+			estado = 'completado';
+			mensaje = 'Tu código de acceso será enviado al correo que proporcionaste. Ingrésalo en la app para activar tu suscripción.';
+		} else if (cargo.status === 'in_progress' || cargo.status === 'charge_pending') {
+			estado = 'pendiente';
+			mensaje = 'Tu pago está siendo procesado. Recibirás tu código de acceso por correo una vez confirmado.';
+		} else {
+			estado = 'fallido';
+			mensaje = cargo.error_message || 'Hubo un problema con tu pago. Intenta nuevamente o contáctanos.';
+		}
+	} catch (error) {
+		estado = 'fallido';
+		mensaje = 'No pudimos verificar el estado de tu pago. Si realizaste el pago, contáctanos.';
+	}
+}
+
+// Íconos y colores según estado
+const CONFIG_ESTADO = {
+	completado: {
+		titulo: '¡Pago exitoso!',
+		color: '#10b981',
+		bgColor: '#d1fae5',
+		icono: 'M5 13l4 4L19 7',
+	},
+	pendiente: {
+		titulo: 'Pago en proceso',
+		color: '#f59e0b',
+		bgColor: '#fef3c7',
+		icono: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
+	},
+	fallido: {
+		titulo: 'Pago no completado',
+		color: '#ef4444',
+		bgColor: '#fee2e2',
+		icono: 'M6 18L18 6M6 6l12 12',
+	},
+	sin_id: {
+		titulo: 'Sin información de pago',
+		color: '#6b7280',
+		bgColor: '#f3f4f6',
+		icono: 'M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z',
+	},
+};
+
+const config = CONFIG_ESTADO[estado];
+---
+
+<Layout title={`${config.titulo} - EnarmDuo`} description="Resultado de tu pago en EnarmDuo">
+	<Header />
+
+	<main class="pt-24 pb-16 flex items-center justify-center" style="background-color: var(--color-blanco); min-height: 80vh;">
+		<div class="max-w-lg mx-auto px-6 text-center">
+			<!-- Ícono -->
+			<div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center" style={`background-color: ${config.bgColor};`}>
+				<svg class="w-10 h-10" style={`color: ${config.color};`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={config.icono} />
+				</svg>
+			</div>
+
+			<!-- Título -->
+			<h1 class="text-3xl font-bold mb-4" style={`color: ${config.color}; font-family: 'Inter', sans-serif;`}>
+				{config.titulo}
+			</h1>
+
+			<!-- Mensaje -->
+			<p class="text-base mb-8" style="color: var(--color-Zinc); font-family: 'Google Sans Flex', sans-serif;">
+				{mensaje || 'No se encontró información del pago. Si crees que es un error, contáctanos.'}
+			</p>
+
+			{/* Instrucciones para pago exitoso */}
+			{estado === 'completado' && (
+				<div class="rounded-xl p-6 mb-8" style="background-color: #f0fdf4; border: 1px solid #bbf7d0;">
+					<h3 class="text-lg font-bold mb-3" style="color: var(--color-azul);">
+						¿Cómo activar tu suscripción?
+					</h3>
+					<ol class="text-left space-y-2 text-sm" style="color: var(--color-Zinc);">
+						<li>1. Abre la app EnarmDuo en tu celular</li>
+						<li>2. Ve a tu perfil o configuración</li>
+						<li>3. Ingresa el código que recibiste por correo</li>
+						<li>4. ¡Listo! Tu suscripción se activará automáticamente</li>
+					</ol>
+				</div>
+			)}
+
+			<!-- Botones de acción -->
+			<div class="flex flex-col sm:flex-row gap-3 justify-center">
+				{estado === 'fallido' && (
+					<a
+						href="/precios"
+						class="px-6 py-3 rounded-lg font-semibold no-underline transition-all"
+						style="background-color: var(--color-azul); color: white;"
+					>
+						Intentar de nuevo
+					</a>
+				)}
+				<a
+					href="/"
+					class="px-6 py-3 rounded-lg font-semibold no-underline transition-all"
+					style="border: 2px solid var(--color-azul); color: var(--color-azul);"
+				>
+					Volver al inicio
+				</a>
+				<a
+					href="/contacto"
+					class="px-6 py-3 rounded-lg font-semibold no-underline transition-all"
+					style="color: var(--color-Zinc);"
+				>
+					¿Necesitas ayuda?
+				</a>
+			</div>
+		</div>
+	</main>
+
+	<Footer />
+</Layout>
