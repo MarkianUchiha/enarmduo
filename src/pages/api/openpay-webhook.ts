@@ -2,6 +2,7 @@
 // POST /api/openpay-webhook
 import type { APIRoute } from 'astro';
 import { PLANES, isPlanValido, type PlanId } from '../../utils/openpay';
+import { enviarCodigoPago } from '../../utils/email';
 
 export const prerender = false;
 
@@ -95,7 +96,17 @@ export const POST: APIRoute = async ({ request }) => {
 
 		console.log(`[OpenPay Webhook] Pago confirmado: ${planId} — Cupón generado: ${codigo}`);
 
-		// TODO: Enviar el código por email al cliente usando nodemailer
+		// Enviar código por email al cliente
+		const clienteEmail = transaction?.customer?.email;
+		if (clienteEmail) {
+			try {
+				await enviarCodigoPago(clienteEmail, codigo, plan.nombre, plan.dias);
+				console.log(`[OpenPay Webhook] Email enviado a: ${clienteEmail}`);
+			} catch (emailError) {
+				console.error('[OpenPay Webhook] Error al enviar email:', emailError);
+				// No falla el webhook — el cupón ya se creó
+			}
+		}
 
 		return new Response('OK', { status: 200 });
 	} catch (error) {
