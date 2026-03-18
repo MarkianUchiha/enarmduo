@@ -4,9 +4,44 @@ import '../styles/global.css';
 interface Props {
 	title?: string;
 	description?: string;
+	/** URL absoluta de imagen para Open Graph (1200x630 recomendado) */
+	ogImage?: string;
+	/** Tipo de página para og:type */
+	ogType?: 'website' | 'article';
+	/** Evitar indexación — usar en páginas de pago/resultado */
+	noIndex?: boolean;
 }
 
-const { title = 'EnarmDuo', description = 'EnarmDuo - Landing Page' } = Astro.props;
+const {
+	title = 'EnarmDuo',
+	description = 'Plataforma de estudio para médicos que se preparan para el ENARM. Casos clínicos, exámenes personalizados y estadísticas.',
+	ogImage = '/img/logos/Logo_final_enarmduo (1).png',
+	ogType = 'website',
+	noIndex = false,
+} = Astro.props;
+
+// URL canónica basada en la URL actual
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site ?? 'https://enarmduo.com').toString();
+const ogImageAbsolute = ogImage.startsWith('http') ? ogImage : `https://enarmduo.com${ogImage}`;
+
+// Datos estructurados de la organización (JSON-LD)
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'Organization',
+	name: 'EnarmDuo',
+	url: 'https://enarmduo.com',
+	logo: 'https://enarmduo.com/img/logos/Logo_final_enarmduo (1).png',
+	description: 'Plataforma educativa para médicos que se preparan para el ENARM.',
+	contactPoint: {
+		'@type': 'ContactPoint',
+		contactType: 'customer support',
+		email: 'soporte@enarmduo.com',
+		availableLanguage: 'Spanish',
+	},
+	sameAs: [
+		'https://play.google.com/store/apps/details?id=com.enarmduo.app',
+	],
+};
 ---
 
 <!doctype html>
@@ -15,8 +50,34 @@ const { title = 'EnarmDuo', description = 'EnarmDuo - Landing Page' } = Astro.pr
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/icono_enarm.svg" />
-		<meta name="description" content={description} />
+
+		<!-- SEO básico -->
 		<title>{title}</title>
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonicalUrl} />
+		{noIndex && <meta name="robots" content="noindex, nofollow" />}
+
+		<!-- Open Graph -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="EnarmDuo" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonicalUrl} />
+		<meta property="og:image" content={ogImageAbsolute} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:locale" content="es_MX" />
+
+		<!-- Twitter Card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImageAbsolute} />
+
+		<!-- JSON-LD solo en páginas indexables -->
+		{!noIndex && (
+			<script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+		)}
 	</head>
 	<body>
 		<slot />

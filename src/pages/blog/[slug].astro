@@ -33,7 +33,11 @@ const relatedPosts = allPosts
 	.slice(0, 3);
 ---
 
-<Layout title={`${post.data.title} - Blog EnarmDuo`}>
+<Layout
+	title={`${post.data.title} - Blog EnarmDuo`}
+	description={post.data.excerpt ?? post.data.description ?? `Artículo de preparación ENARM: ${post.data.title}`}
+	ogType="article"
+>
 	<Header />
 	
 	<article class="min-h-screen bg-gray-50">
