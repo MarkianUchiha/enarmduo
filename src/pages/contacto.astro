@@ -4,8 +4,8 @@ import Header from '../components/core/Header.astro';
 import ContactoForm from '../components/Form/ContactoForm';
 import Footer from '../components/core/Footer.astro';
 
-// Site key de Turnstile — se lee de env en build/SSR
-const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || '';
+// Site key de Turnstile — import.meta.env para páginas prerrenderizadas
+const turnstileSiteKey = import.meta.env.TURNSTILE_SITE_KEY || '';
 ---
 
 <Layout title="Contacto - EnarmDuo">
