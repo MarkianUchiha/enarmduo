@@ -3,11 +3,14 @@ import Layout from '../layouts/Layout.astro';
 import Header from '../components/core/Header.astro';
 import ContactoForm from '../components/Form/ContactoForm';
 import Footer from '../components/core/Footer.astro';
+
+// Site key de Turnstile — se lee de env en build/SSR
+const turnstileSiteKey = process.env.TURNSTILE_SITE_KEY || '';
 ---
 
 <Layout title="Contacto - EnarmDuo">
 	<Header />
-	
+
 	<main class="pt-24 pb-16 min-h-screen" style="background-color: var(--color-blanco);">
 		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 			{/* Encabezado de la sección */}
@@ -29,9 +32,9 @@ import Footer from '../components/core/Footer.astro';
 							Completa todos los campos requeridos. Tu mensaje será enviado al departamento correspondiente.
 						</p>
 					</div>
-					
-					{/* Componente del formulario */}
-					<ContactoForm />
+
+					{/* Componente del formulario con Turnstile site key */}
+					<ContactoForm client:load turnstileSiteKey={turnstileSiteKey} />
 				</div>
 
 				{/* Información adicional */}
@@ -93,6 +96,15 @@ import Footer from '../components/core/Footer.astro';
 			</div>
 		</div>
 	</main>
-	
+
 	<Footer />
 </Layout>
+
+{/* Script de Cloudflare Turnstile — carga async para no bloquear renderizado */}
+<script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoad" async defer></script>
+<script is:inline>
+	// Dispara evento cuando Turnstile está listo para que React lo capture
+	function onTurnstileLoad() {
+		window.dispatchEvent(new Event('turnstile-ready'));
+	}
+</script>

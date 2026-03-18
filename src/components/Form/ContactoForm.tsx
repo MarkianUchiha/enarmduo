@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react';
+import { useState, useEffect, useRef, type FormEvent } from 'react';
 
 // Tipo de solicitud con su correo correspondiente
 type TipoSolicitud = 'soporte' | 'pagos' | 'cuenta';
@@ -24,7 +24,30 @@ const correosPorTipo: Record<TipoSolicitud, string> = {
 	cuenta: 'soporte@enarmduo.com'
 };
 
-export default function ContactoForm() {
+// Declaración del widget de Turnstile que se inyecta via script externo
+declare global {
+	interface Window {
+		turnstile?: {
+			render: (container: string | HTMLElement, options: {
+				sitekey: string;
+				callback: (token: string) => void;
+				'error-callback'?: () => void;
+				'expired-callback'?: () => void;
+				theme?: 'light' | 'dark' | 'auto';
+				size?: 'normal' | 'compact';
+			}) => string;
+			reset: (widgetId: string) => void;
+			remove: (widgetId: string) => void;
+		};
+	}
+}
+
+// Site key de Turnstile — se pasa como prop desde Astro
+interface ContactoFormProps {
+	turnstileSiteKey: string;
+}
+
+export default function ContactoForm({ turnstileSiteKey }: ContactoFormProps) {
 	const [formData, setFormData] = useState<FormData>({
 		nombre: '',
 		email: '',
@@ -35,6 +58,49 @@ export default function ContactoForm() {
 	const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
 	const [enviando, setEnviando] = useState(false);
 	const [enviado, setEnviado] = useState(false);
+	const [errorGeneral, setErrorGeneral] = useState('');
+
+	// Estado del captcha
+	const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+	const turnstileRef = useRef<HTMLDivElement>(null);
+	const widgetIdRef = useRef<string | null>(null);
+
+	// Cargar e inicializar Turnstile cuando el componente monta
+	useEffect(() => {
+		const inicializarTurnstile = () => {
+			if (!window.turnstile || !turnstileRef.current) return;
+
+			// Evitar renderizar dos veces
+			if (widgetIdRef.current) return;
+
+			widgetIdRef.current = window.turnstile.render(turnstileRef.current, {
+				sitekey: turnstileSiteKey,
+				callback: (token: string) => setCaptchaToken(token),
+				'error-callback': () => setCaptchaToken(null),
+				'expired-callback': () => setCaptchaToken(null),
+				theme: 'light',
+			});
+		};
+
+		// Si el script ya cargó, inicializar directo
+		if (window.turnstile) {
+			inicializarTurnstile();
+			return;
+		}
+
+		// Si no, esperar a que cargue (evento del script en la página Astro)
+		const onTurnstileReady = () => inicializarTurnstile();
+		window.addEventListener('turnstile-ready', onTurnstileReady);
+
+		return () => {
+			window.removeEventListener('turnstile-ready', onTurnstileReady);
+			// Limpiar widget al desmontar
+			if (widgetIdRef.current && window.turnstile) {
+				window.turnstile.remove(widgetIdRef.current);
+				widgetIdRef.current = null;
+			}
+		};
+	}, [turnstileSiteKey]);
 
 	// Contar palabras del mensaje
 	const contarPalabras = (texto: string): number => {
@@ -75,50 +141,60 @@ export default function ContactoForm() {
 		if (errors[name as keyof FormData]) {
 			setErrors(prev => ({ ...prev, [name]: undefined }));
 		}
+		setErrorGeneral('');
 	};
 
 	// Manejar envío del formulario
 	const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		setErrorGeneral('');
 
-		if (!validarFormulario()) {
+		if (!validarFormulario()) return;
+
+		if (!captchaToken) {
+			setErrorGeneral('Completa la verificación de seguridad antes de enviar.');
 			return;
 		}
 
 		setEnviando(true);
 
 		try {
-			// Obtener el correo destino según el tipo seleccionado
 			const correoDestino = correosPorTipo[formData.tipo];
 
-			// Enviar formulario al endpoint API de Astro
 			const response = await fetch('/api/send-contacto', {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					...formData,
-					correoDestino
+					correoDestino,
+					captchaToken,
+					// Honeypot: campo oculto, si tiene valor el servidor lo ignora
+					website: (document.getElementById('website') as HTMLInputElement)?.value || '',
 				})
 			});
 
+			if (response.status === 429) {
+				setErrorGeneral('Demasiados envíos. Intenta de nuevo en 15 minutos.');
+				return;
+			}
+
 			if (!response.ok) {
-				throw new Error('Error al enviar el mensaje');
+				const data = await response.json();
+				throw new Error(data.error || 'Error al enviar el mensaje');
 			}
 
 			setEnviado(true);
-			setFormData({
-				nombre: '',
-				email: '',
-				tipo: 'soporte',
-				mensaje: ''
-			});
+			setFormData({ nombre: '', email: '', tipo: 'soporte', mensaje: '' });
+			setCaptchaToken(null);
 		} catch (error) {
-			console.error('Error al enviar el formulario:', error);
-			alert('Hubo un error al enviar el mensaje. Por favor, intenta nuevamente.');
+			const mensaje = error instanceof Error ? error.message : 'Error al enviar el mensaje';
+			setErrorGeneral(mensaje);
 		} finally {
 			setEnviando(false);
+			// Resetear captcha para el siguiente envío
+			if (widgetIdRef.current && window.turnstile) {
+				window.turnstile.reset(widgetIdRef.current);
+			}
 		}
 	};
 
@@ -126,7 +202,7 @@ export default function ContactoForm() {
 	if (enviado) {
 		return (
 			<div className="flex flex-col items-center justify-center p-8 text-center">
-				<div className="w-16 h-16 mb-4 rounded-full flex items-center justify-center" style="background-color: var(--color-azul);">
+				<div className="w-16 h-16 mb-4 rounded-full flex items-center justify-center" style={{ backgroundColor: 'var(--color-azul)' }}>
 					<svg
 						className="w-8 h-8"
 						style={{ color: 'var(--color-blanco)' }}
@@ -156,6 +232,12 @@ export default function ContactoForm() {
 
 	return (
 		<form onSubmit={handleSubmit} className="space-y-6">
+			{/* Honeypot: campo invisible para atrapar bots */}
+			<div style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, overflow: 'hidden' }} aria-hidden="true">
+				<label htmlFor="website">No llenar este campo</label>
+				<input type="text" id="website" name="website" tabIndex={-1} autoComplete="off" />
+			</div>
+
 			{/* Campo: Nombre */}
 			<div>
 				<label htmlFor="nombre" className="block text-sm font-medium mb-2" style={{ color: 'var(--color-azul)' }}>
@@ -257,6 +339,16 @@ export default function ContactoForm() {
 					</div>
 				</div>
 			</div>
+
+			{/* Widget de Turnstile (captcha invisible/managed) */}
+			<div ref={turnstileRef} className="flex justify-center" />
+
+			{/* Mensaje de error general */}
+			{errorGeneral && (
+				<div className="p-3 rounded-lg bg-red-50 border border-red-200">
+					<p className="text-sm text-red-600 text-center">{errorGeneral}</p>
+				</div>
+			)}
 
 			{/* Botón de envío */}
 			<button
